@@ -23,7 +23,8 @@ const inputStyle = {
   "outline": `none`,
   "padding": `0 12px`,
   "textOverflow": `ellipses`,
-  "width": `400px`,
+  "width": `50%`,
+  "min-width": `15rem`,
   "background-color": "#FFFFFF"
 }
 
