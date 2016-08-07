@@ -1,9 +1,12 @@
-import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import '../imports/startup/accounts-config.js';
-import { renderRoutes } from '../imports/startup/routes.jsx';
+import 'normalize.css';
+
+import renderRoutes from '../imports/startup/client/routes.jsx';
+
+injectTapEventPlugin();
 
 Meteor.startup(() => {
   render(renderRoutes(), document.getElementById('react-root'));

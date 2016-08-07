@@ -20,7 +20,5 @@ mdg:geolocation
 react-meteor-data
 accounts-password
 accounts-google
-std:accounts-material
-fourseven:scss@3.2.0
-materialize:materialize
 less
+service-configuration

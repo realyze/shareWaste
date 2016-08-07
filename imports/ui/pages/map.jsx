@@ -1,33 +1,17 @@
+/* global Geolocation */
+
 import React from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
+import * as _ from 'lodash';
 
 import SimpleMap from '../components/map.jsx';
-import {WasteSpots} from '../../api/wasteSpots';
+import Compost from '../../api/compost';
 
 const mapContainerStyle = {
-  height: '60%'
+  height: '60%',
 };
-
-function renderMap(props) {
-  if (props.initialLocation) {
-    return <SimpleMap
-      initialLocation={props.initialLocation}
-      markers={props.wasteSpots}
-      onMapClick={onMapClick}
-      onMarkerClick={onMarkerClick}
-      onMarkerRightclick={onMarkerRightclick} />
-  } else {
-    return <div>Retrieving current location...</div>
-  }
-}
-
-const Main = (props) => (
-  <div className="map-container" style={mapContainerStyle}>
-    {renderMap(props)}
-  </div>
-);
 
 const onMapClick = (ev) => {
   Meteor.call('wasteSpots.insert', {
@@ -47,10 +31,41 @@ const onMarkerClick = (marker) => {
   console.log('marker clicked', marker);
 }
 
+
+class Main extends React.Component {
+
+
+  renderMap(props) {
+    if (props.initialLocation) {
+      return (<SimpleMap
+        initialLocation={props.initialLocation}
+        markers={_.map(props.composts, c => ({
+          _id: c._id,
+          position: c.address.location,
+        }))}
+        onMapClick={onMapClick}
+        onMarkerClick={onMarkerClick}
+        onMarkerRightclick={onMarkerRightclick}
+        />);
+    }
+
+    return <div>Retrieving current location...</div>;
+  }
+
+  render() {
+    return (
+      <div className="map-container" style={mapContainerStyle}>
+        {this.renderMap(this.props)}
+      </div>
+    );
+  }
+
+}
+
 export default createContainer(() => {
-  Meteor.subscribe('wasteSpots');
+  Meteor.subscribe('composts');
   return {
-    wasteSpots: WasteSpots.find({}).fetch(),
-    initialLocation: Geolocation.latLng()
+    composts: Compost.find({}).fetch(),
+    initialLocation: Geolocation.latLng(),
   };
 }, Main);

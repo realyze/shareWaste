@@ -1,6 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 
-import '../imports/api/wasteSpots.js';
+// API
+import '../imports/api/compost';
+import '../imports/api/user';
+
+import '../imports/startup/server/accounts-config';
 
 Meteor.startup(() => {
   // code to run on server at startup

@@ -1,0 +1,24 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "allowImportExportEverywhere": true
+  },
+  "plugins": [
+    "meteor"
+  ],
+  "extends": [
+    "airbnb",
+    "plugin:meteor/recommended"
+  ],
+  "settings": {
+    "import/resolver": "meteor"
+  },
+  "rules": {
+    "react/jsx-closing-bracket-location": [1, "props-aligned"],
+    "react/sort-comp": 0,
+    "object-curly-spacing": 1,
+    "eol-last": 0,
+    "no-param-reassign": 0,
+    "no-underscore-dangle": 0
+  }
+}
