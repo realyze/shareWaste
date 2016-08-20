@@ -1,15 +1,9 @@
+/* global google */
+
 import React, {Component} from 'react';
 import {GoogleMapLoader, GoogleMap, Marker, SearchBox} from "react-google-maps";
-import {extend} from 'lodash';
-
-function renderMarker(marker, index, props) {
-  return (<Marker
-    key={marker._id}
-    position={marker.position}
-    onClick={props.handleMarkerClick}
-    onRightclick={() => props.onMarkerRightclick(marker) }
-    />)
-}
+import { autobind } from 'core-decorators';
+import * as _ from 'lodash';
 
 const inputStyle = {
   "border": `1px solid transparent`,
@@ -26,40 +20,32 @@ const inputStyle = {
   "width": `50%`,
   "min-width": `15rem`,
   "background-color": "#FFFFFF"
+};
+
+function mongo2google(loc) {
+  return new google.maps.LatLng(loc[1], loc[0]);
 }
 
-const defaultMapCenter = {
-  lat: 47.6205588,
-  lng: -122.3212725,
-}
-
-
+@autobind
 class SimpleMap extends Component {
+
+  state = {};
 
   constructor(props) {
     super(props);
 
     this.searchBox = null;
     this.map = null;
-
-    this.state = {
-      center: props.initialLocation,
-      bounds: null,
-      markers: props.markers
-    }
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      markers: props.markers
-    });
   }
 
   handleBoundsChanged() {
-    this.setState({
+    const center = this.map.getCenter()
+    const data = {
       bounds: this.map.getBounds(),
-      center: this.map.getCenter(),
-    });
+      center,
+    };
+    this.props.onMapChanged(data);
+    this.setCenter({lat: center.lat(), lng: center.lng()});
   }
 
   handlePlacesChanged() {
@@ -73,7 +59,11 @@ class SimpleMap extends Component {
 
     this.setCenter({
       lat: mapCenter.lat(),
-      lng: mapCenter.lng()
+      lng: mapCenter.lng(),
+    });
+
+    this.setState({
+      zoom: 14,
     });
   }
 
@@ -81,8 +71,14 @@ class SimpleMap extends Component {
     this.setState({ center: { lat, lng } });
   }
 
+  onZoomChanged() {
+    this.setState({ zoom: this.map.props.map.zoom });
+  }
+
   render() {
-    return <section style={{ height: `100%` }}>
+    //console.log('map props', this.props, this.state);
+    console.log('markers to render', this.props.markers);
+    return (<section style={{ height: `100%` }}>
       <GoogleMapLoader
         containerElement={
           <div
@@ -95,33 +91,37 @@ class SimpleMap extends Component {
         googleMapElement={
           <GoogleMap
             ref={(map) => this.map = map}
-            zoom={15}
-            center={this.state.center || this.state.defaultCenter}
+            zoom={this.state.zoom || this.props.initialZoom || 11}
+            center={new google.maps.LatLng(this.state.center || this.props.initialLocation)}
             onClick={this.props.onMapClick}
-            onBoundsChanged={this.handleBoundsChanged.bind(this) }
+            onZoomChanged={this.onZoomChanged}
+            onBoundsChanged={_.debounce(this.handleBoundsChanged, 50)}
             >
-            <SearchBox
-              bounds={this.state.bounds}
-              controlPosition={google.maps.ControlPosition.TOP_LEFT}
-              onPlacesChanged={this.handlePlacesChanged.bind(this) }
-              ref={(ref) => this.searchBox = ref}
-              placeholder="Type to search..."
-              style={inputStyle}
-              />
             {
-              this.state.markers.map(marker => <Marker
-                key={marker._id}
-                position={marker.position}
-                onClick={() => this.props.onMarkerClick(marker) }
-                onRightclick={() => this.props.onMarkerRightclick(marker) }
-                />
-              )
+              this.props.showSearchBox &&
+                <SearchBox
+                  controlPosition={google.maps.ControlPosition.TOP_LEFT}
+                  onPlacesChanged={this.handlePlacesChanged }
+                  ref={(ref) => this.searchBox = ref}
+                  placeholder="Enter your location..."
+                  style={inputStyle}
+                  />
+            }
+            {
+              this.props.markers.map(marker => {
+                return (<Marker
+                  key={marker._id}
+                  position={mongo2google(marker.location.coordinates)}
+                  onClick={() => this.props.onMarkerClick(marker) }
+                  onRightclick={() => this.props.onMarkerRightclick(marker)}
+                  />);
+              })
             }
           </GoogleMap>
         }
         />
-    </section>
-  };
-};
+    </section>);
+  }
+}
 
 export default SimpleMap;

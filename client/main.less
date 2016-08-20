@@ -4,26 +4,22 @@ html, body, #react-root, [data-reactroot], .container {
 }
 
 html {
-  font-family: 'Roboto', sans-serif;
+  //font-family: 'Roboto', sans-serif;
+  font-family: 'Droid Serif', serif;
 }
 
 body {
   background-color: #FDFFFC;
-}
-
-.main-choice-container {
-
-  .main-choice-button {
-    padding: 4rem;
-    border: 1px black solid;
-
-    &:hover {
-      background-color: #2EC4B6;
-      cursor: pointer;
-    }
-  }
+  color: #676758;
 }
 
 input:focus {
   box-shadow: initial !important;
+}
+
+.background-map {
+  width: 100%;
+  height: 30rem;
+  -webkit-filter: grayscale(0.5) opacity(0.75) blur(0.5px);
+  position: static;
 }
