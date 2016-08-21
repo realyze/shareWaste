@@ -32,10 +32,14 @@ class DetailsPage extends React.Component {
 
   @autobind
   _handleFinished() {
-    Meteor.call('user.updateDetails', {
+    Meteor.call('composts.insert', {
       accepts: this.state.accepts,
       rejects: this.state.rejects,
-      address: this.state.address,
+      location: {
+        lng: this.state.address.location.lng,
+        lat: this.state.address.location.lat,
+      },
+      address: this.state.address.label,
     }, (err) => {
       if (err) console.error(err);
       this.props.router.push('/');

@@ -77,7 +77,7 @@ class SimpleMap extends Component {
 
   render() {
     //console.log('map props', this.props, this.state);
-    console.log('markers to render', this.props.markers);
+    console.log('map props', this.props);
     return (<section style={{ height: `100%` }}>
       <GoogleMapLoader
         containerElement={
@@ -109,8 +109,11 @@ class SimpleMap extends Component {
             }
             {
               this.props.markers.map(marker => {
+                const selected = marker._id === this.props.selectedMarkerId;
+                const iconUrl = selected ? '/images/farm_marker_selected.png' : '/images/farm_marker.png';
                 return (<Marker
                   key={marker._id}
+                  icon={iconUrl}
                   position={mongo2google(marker.location.coordinates)}
                   onClick={() => this.props.onMarkerClick(marker) }
                   onRightclick={() => this.props.onMarkerRightclick(marker)}

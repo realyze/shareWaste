@@ -6,13 +6,15 @@ const Composts = new Mongo.Collection('composts');
 const maxResults = 256;
 
 Meteor.methods({
-  'composts.insert': ({ title, location, address }) => Composts.insert({
-    title,
+  'composts.insert': ({ location, address, accepts, rejects }) => Composts.insert({
     location: {
       type: 'Point',
       coordinates: [location.lng, location.lat],
     },
     address,
+    accepts,
+    rejects,
+    ownerId: Meteor.userId(),
   }),
 
   'composts.remove': ({ _id }) => Composts.remove(_id),

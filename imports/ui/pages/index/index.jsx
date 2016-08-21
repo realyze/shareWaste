@@ -5,7 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
-import { withRouter } from 'react-router'
+import { withRouter, Link } from 'react-router';
 
 import Map from './../map/map.jsx';
 
@@ -68,7 +68,9 @@ class IndexPage extends React.Component {
             <div>
               <h2>I have</h2>
               <h1>compost</h1>
-              <a className="compost-button waves-effect waves-light btn">Share it with others!</a>
+              <Link
+                to="share-compost/signup"
+                className="compost-button waves-effect waves-light btn">Share it with others!</Link>
             </div>
           </div>
           </div>

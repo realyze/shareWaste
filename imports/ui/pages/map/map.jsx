@@ -26,11 +26,7 @@ const onMapClick = (ev) => {
 };
 
 const onMarkerRightclick = (marker) => {
-  Meteor.call('composts.remove', { _id: marker._id });
-};
-
-const onMarkerClick = (marker) => {
-  console.log('marker clicked', marker);
+  //Meteor.call('composts.remove', { _id: marker._id });
 };
 
 const onMapChanged = ({ center, bounds }) => {
@@ -42,13 +38,18 @@ class Main extends React.Component {
 
   _map = null;
 
+  onMarkerClick = (marker) => {
+    console.log('marker clicked', marker);
+  };
+
   renderMap(props) {
     return (<SimpleMap
       ref={(ref) => this._map = ref}
       initialLocation={defaultLocation}
       markers={props.composts}
-      onMapClick={onMapClick}
-      onMarkerClick={onMarkerClick}
+      selectedMarkerId={props.selectedCompostId}
+      onMapClick={this.props.onMapClick}
+      onMarkerClick={this.props.onMarkerClick}
       onMarkerRightclick={onMarkerRightclick}
       onMapChanged={onMapChanged}
       showSearchBox={this.props.showSearchBox}
